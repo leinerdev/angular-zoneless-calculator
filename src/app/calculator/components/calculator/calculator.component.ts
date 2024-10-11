@@ -5,8 +5,7 @@ import {
   inject,
   viewChildren,
 } from '@angular/core';
-
-import { CalculatorButtonComponent } from '@/calculator/components/calculator-button/calculator-button.component';
+import { CalculatorButtonComponent } from '../calculator-button/calculator-button.component';
 import { CalculatorService } from '@/calculator/services/calculator.service';
 
 @Component({
@@ -18,26 +17,35 @@ import { CalculatorService } from '@/calculator/services/calculator.service';
   host: {
     '(document:keyup)': 'handleKeyboardEvent($event)',
   },
+  // styles: `
+  //   // .is-command {
+  //   //   @apply bg-indigo-700 bg-opacity-20;
+  //   // }
+  // `,
 })
 export class CalculatorComponent {
-  private readonly calculatorService = inject(CalculatorService);
+  private calculatorService = inject(CalculatorService);
+
+  public calculatorButtons = viewChildren(CalculatorButtonComponent);
+
   public resultText = computed(() => this.calculatorService.resultText());
   public subResultText = computed(() => this.calculatorService.subResultText());
   public lastOperator = computed(() => this.calculatorService.lastOperator());
 
-  public calculatorButtons = viewChildren(CalculatorButtonComponent);
+  // get resultText() {
+  //   return this.calculatorService.resultText();
+  // }
 
-  public handleClick(value: string) {
-    console.log(value);
+  handleClick(key: string) {
+    this.calculatorService.constructNumber(key);
   }
 
   // @HostListener('document:keyup', ['$event'])
-  public handleKeyboardEvent(event: KeyboardEvent) {
+  handleKeyboardEvent(event: KeyboardEvent) {
     const keyEquivalents: Record<string, string> = {
-      Clear: 'C',
       Escape: 'C',
-      '*': '×',
-      X: '×',
+      Clear: 'C',
+      X: '*',
       '/': '÷',
       Enter: '=',
     };
